@@ -1,5 +1,17 @@
 version: '3'
 services:
+  client:
+    tty: true
+    build:
+      context: .
+      dockerfile: docker/client/Dockerfile
+    volumes:
+      - ./client:/var/www
+    ports:
+      - 3000:3000
+    networks:
+      - lesson
+
   go:
     image: golang:1.20-alpine
     tty: true
