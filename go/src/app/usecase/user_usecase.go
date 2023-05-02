@@ -3,8 +3,9 @@ package usecase
 import (
 	"app/model"      // modelパッケージをインポート
 	"app/repository" // repositoryパッケージをインポート
-	"os"             // OS環境変数の読み取りに必要
-	"time"           // 時間関連処理に必要
+	"app/validator"
+	"os"   // OS環境変数の読み取りに必要
+	"time" // 時間関連処理に必要
 
 	"github.com/golang-jwt/jwt/v4" // JWT関連処理に必要
 	"golang.org/x/crypto/bcrypt"   // bcrypt関連処理に必要
@@ -20,15 +21,20 @@ type IUserUseCase interface {
 type userUseCase struct {
 	// IUserRepositoryを実装した構造体のインスタンス
 	ur repository.IUserRepository
+	uv validator.IUserValidator
 }
 
 // NewUserUseCaseはuserUseCase構造体を生成するためのコンストラクタ
-func NewUserUseCase(ur repository.IUserRepository) IUserUseCase {
-	return &userUseCase{ur}
+func NewUserUseCase(ur repository.IUserRepository, uv validator.IUserValidator) IUserUseCase {
+	return &userUseCase{ur, uv}
 }
 
 // SignUpはユーザ登録のユースケースの実装
 func (uu *userUseCase) SignUp(user model.User) (model.UserResponse, error) {
+	// ユーザ情報のバリデーションを実行
+	if err := uu.uv.UserValidate(user); err != nil {
+		return model.UserResponse{}, err
+	}
 	// ユーザパスワードをハッシュ化
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
@@ -50,6 +56,10 @@ func (uu *userUseCase) SignUp(user model.User) (model.UserResponse, error) {
 
 // Loginはログイン認証のユースケースの実装
 func (uu *userUseCase) Login(user model.User) (string, error) {
+	// ユーザ情報のバリデーションを実行
+	if err := uu.uv.UserValidate(user); err != nil {
+		return "", err
+	}
 	// ログインユーザーがデータベース上に存在するか確認するために、
 	// メールアドレスをキーにユーザー情報を取得します。
 	storedUser := model.User{}
