@@ -10,12 +10,13 @@ const queryClient = new QueryClient({})
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    axios.defaults.withCredentials = true
     const getCsrfToken = async () => {
+      axios.defaults.withCredentials = true
       const { data } = await axios.get<CsrfToken>(
         `${process.env.NEXT_PUBLIC_APP_API_URL}/csrf`
       )
       axios.defaults.headers.common['X-CSRF-Token'] = data.csrf_token
+      console.log(data)
     }
     getCsrfToken()
   }, [])

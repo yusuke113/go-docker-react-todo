@@ -60,7 +60,6 @@ up:
 	docker-compose up -d
 down:
 	docker-compose down
-	@make tele
 restart:
 	docker-compose down
 	docker-compose up -d
@@ -90,6 +89,6 @@ gl-ol:
 	git log --oneline
 
 open:
-	open http://localhost:3333
+	open http://localhost:3000
 open-prod:
-	open http://localhost:4444
+	open http://localhost:4000

@@ -1,10 +1,11 @@
+import useStore from "@/store"
 import { CsrfToken } from "@/types"
 import axios from "axios"
 import { useRouter } from "next/router"
-import { useStore } from "zustand"
 
 
 export const useError = () => {
+  const router = useRouter()
   const resetEditedTask = useStore((state) => state.resetEditedTask)
   const getCsrfToken = async () => {
     const { data } = await axios.get<CsrfToken>(
@@ -13,8 +14,6 @@ export const useError = () => {
     axios.defaults.headers.common["X-CSRF-TOKEN"] = data.csrf_token
   }
   const switchErrorHandling = (msg: string) => {
-    const router = useRouter()
-
     switch (msg) {
       case 'invalid csrf token':
         getCsrfToken()

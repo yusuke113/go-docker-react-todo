@@ -1,4 +1,4 @@
-import { create } from "zustand"
+import { create } from 'zustand'
 
 type EditedTask = {
   id: number
@@ -13,9 +13,9 @@ type State = {
 
 const useStore = create<State>((set) => ({
   editedTask: { id: 0, title: '' },
-  updatedEditedTask: (payload) =>
+  updateEditedTask: (payload) =>
     set({
-      editedTask: payload
+      editedTask: payload,
     }),
   resetEditedTask: () => set({ editedTask: { id: 0, title: '' } }),
 }))

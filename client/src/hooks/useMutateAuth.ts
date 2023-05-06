@@ -1,13 +1,14 @@
 import { useRouter } from "next/router"
-import { useStore } from "zustand"
 import { useError } from "./useError"
 import axios from "axios"
+import useStore from "@/store"
 import { useMutation } from "@tanstack/react-query"
 
 export const useMutateAuth = () => {
   const router = useRouter()
   const resetEditedTask = useStore((state) => state.resetEditedTask)
   const { switchErrorHandling } = useError()
+
   const loginMutation = useMutation(
     async (user: Credential) =>
       await axios.post(`${process.env.NEXT_PUBLIC_APP_API_URL}/login`, user),
