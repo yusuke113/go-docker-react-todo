@@ -92,3 +92,5 @@ open:
 	open http://localhost:3000
 open-prod:
 	open http://localhost:4000
+open-pgadmin:
+	open http://localhost:5050

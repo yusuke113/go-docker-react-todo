@@ -33,6 +33,8 @@ services:
       POSTGRES_USER: udemy
       POSTGRES_PASSWORD: udemy
       POSTGRES_DB: udemy
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     networks:
       - lesson
 
@@ -46,6 +48,10 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     networks:
       - lesson
+
+volumes:
+  pgdata:
+    driver: local
 
 networks:
   lesson:
