@@ -13,12 +13,15 @@ import (
 func NewRouter(uc controller.IUserController, tc controller.ITaskController) *echo.Echo {
 	e := echo.New()
 
+	// CORSミドルウェアの設定
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"http://localhost:3000", os.Getenv("FE_URL")},
 		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAccessControlAllowHeaders, echo.HeaderXCSRFToken},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowCredentials: true,
 	}))
+
+	// CSRFミドルウェアの設定
 	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 		CookiePath:     "/",
 		CookieDomain:   os.Getenv("API_DOMAIN"),
@@ -28,11 +31,13 @@ func NewRouter(uc controller.IUserController, tc controller.ITaskController) *ec
 		// CookieMaxAge: 60,
 	}))
 
+	// ルートの設定
 	e.POST("/signup", uc.SignUp)
 	e.POST("/login", uc.Login)
 	e.POST("/logout", uc.Logout)
 	e.GET("/csrf", uc.CsrfToken)
 
+	// "/tasks"グループの設定
 	t := e.Group("/tasks")
 	t.Use(echojwt.WithConfig(echojwt.Config{
 		SigningKey:  []byte(os.Getenv("SECRET")),
